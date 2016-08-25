@@ -2,9 +2,11 @@ package net.rodrigobrito.tempo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -53,6 +55,22 @@ public class MainFragment extends Fragment {
         inflater.inflate(R.menu.menu, menu);
     }
 
+    public void updateWeather(){
+        FetchWeatherTask wt = new FetchWeatherTask();
+        Toast.makeText( getActivity(), getActivity().getString(R.string.carregando), Toast.LENGTH_SHORT).show();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String local = sharedPref.getString("cep","");
+        String units = sharedPref.getString("metric","");
+        String numDays = sharedPref.getString("days", "7");
+        wt.execute(local, units, numDays);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -60,10 +78,13 @@ public class MainFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask wt = new FetchWeatherTask();
-            Toast.makeText( getActivity(), getActivity().getString(R.string.carregando), Toast.LENGTH_SHORT).show();
-            wt.execute("94043");
+            updateWeather();
             return true;
+        }else if(id == R.id.action_settings){
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+        }else if(id == R.id.action_map){
+            openPreferredLocationInMap();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -74,17 +95,7 @@ public class MainFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
-        };
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
+        List<String> weekForecast = new ArrayList<String>();
         mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
@@ -98,6 +109,30 @@ public class MainFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void openPreferredLocationInMap() {
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = sharedPrefs.getString(
+                "localizacao",
+                getString(R.string.pref_localizacao_default));
+
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        // intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q", location)
+                .build();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(getActivity(), "Couldn't call " + location + ", no receiving apps installed!", Toast.LENGTH_SHORT);
+        }
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]>{
@@ -134,9 +169,12 @@ public class MainFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            String local = params[0];
             String format = "json";
-            String units = "metric";
-            int numDays = 7;
+            String units = params[1];
+            String numDays = params[2];
 
             try {
 
@@ -149,10 +187,10 @@ public class MainFragment extends Fragment {
                 final String APPID_PARAM = "APPID";
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, params[0])
+                        .appendQueryParameter(QUERY_PARAM, local)
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, units)
-                        .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
+                        .appendQueryParameter(DAYS_PARAM, numDays)
                         .appendQueryParameter(APPID_PARAM, "9092670530cd215b30e2b787f0dce058")
                         .build();
 
@@ -205,7 +243,7 @@ public class MainFragment extends Fragment {
             }
 
             try {
-                String[] datas = getWeatherDataFromJson(JSONResult, numDays);
+                String[] datas = getWeatherDataFromJson(JSONResult, Integer.parseInt(numDays));
                 return datas;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
