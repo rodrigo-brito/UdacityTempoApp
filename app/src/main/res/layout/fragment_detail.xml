@@ -7,8 +7,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
+        android:src="@android:drawable/sym_def_app_icon"
+        android:layout_below="@+id/previsao"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/previsao"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="68dp"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:layout_marginTop="36dp" />
 </RelativeLayout>
