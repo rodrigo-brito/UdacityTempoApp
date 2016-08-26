@@ -21,6 +21,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import net.rodrigobrito.tempo.model.Previsao;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,9 +116,7 @@ public class MainFragment extends Fragment {
     private void openPreferredLocationInMap() {
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String location = sharedPrefs.getString(
-                "localizacao",
-                getString(R.string.pref_localizacao_default));
+        String location = sharedPrefs.getString("localizacao",getString(R.string.pref_localizacao_default));
 
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
@@ -135,23 +135,23 @@ public class MainFragment extends Fragment {
         }
     }
 
-    public class FetchWeatherTask extends AsyncTask<String, Void, String[]>{
+    public class FetchWeatherTask extends AsyncTask<String, Void, ArrayList<Previsao>>{
 
         private final String LOG_TAG = "RODRIGO_BRITO";
 
         @Override
-        protected void onPostExecute(String[] result) {
+        protected void onPostExecute(ArrayList<Previsao> result) {
             if (result != null) {
                 mForecastAdapter.clear();
-                for(String dayForecastStr : result) {
-                    mForecastAdapter.add(dayForecastStr);
+                for(Previsao previsao : result) {
+                    mForecastAdapter.add(previsao.toString());
                 }
                 // New data is back from the server.  Hooray!
             }
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected ArrayList<Previsao> doInBackground(String... params) {
 
             // If there's no zip code, there's nothing to look up.  Verify size of params.
             if (params.length == 0) {
@@ -243,8 +243,8 @@ public class MainFragment extends Fragment {
             }
 
             try {
-                String[] datas = getWeatherDataFromJson(JSONResult, Integer.parseInt(numDays));
-                return datas;
+                ArrayList<Previsao> previsoes = getWeatherDataFromJson(JSONResult, Integer.parseInt(numDays));
+                return previsoes;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
@@ -259,7 +259,7 @@ public class MainFragment extends Fragment {
         private String getReadableDateString(long time){
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
-            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEEE dd/MM/yyyy");
             return shortenedDateFormat.format(time);
         }
 
@@ -282,9 +282,9 @@ public class MainFragment extends Fragment {
          * Fortunately parsing is easy:  constructor takes the JSON string and converts it
          * into an Object hierarchy for us.
          */
-        private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+        private ArrayList<Previsao> getWeatherDataFromJson(String forecastJsonStr, int numDays)
                 throws JSONException {
-
+            ArrayList<Previsao> previsoes = new ArrayList<Previsao>();
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_LIST = "list";
             final String OWM_WEATHER = "weather";
@@ -292,6 +292,7 @@ public class MainFragment extends Fragment {
             final String OWM_MAX = "max";
             final String OWM_MIN = "min";
             final String OWM_DESCRIPTION = "main";
+            final String OWM_ICON = "icon";
 
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
             JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
@@ -316,9 +317,8 @@ public class MainFragment extends Fragment {
             String[] resultStrs = new String[numDays];
             for(int i = 0; i < weatherArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
-                String day;
-                String description;
-                String highAndLow;
+                String data;
+                String icon;
 
                 // Get the JSON object representing the day
                 JSONObject dayForecast = weatherArray.getJSONObject(i);
@@ -329,26 +329,26 @@ public class MainFragment extends Fragment {
                 long dateTime;
                 // Cheating to convert this to UTC time, which is what we want anyhow
                 dateTime = dayTime.setJulianDay(julianStartDay+i);
-                day = getReadableDateString(dateTime);
+                data = getReadableDateString(dateTime).toUpperCase();
 
                 // description is in a child array called "weather", which is 1 element long.
                 JSONObject weatherObject = dayForecast.getJSONArray(OWM_WEATHER).getJSONObject(0);
-                description = weatherObject.getString(OWM_DESCRIPTION);
+                icon = weatherObject.getString(OWM_ICON);
 
                 // Temperatures are in a child object called "temp".  Try not to name variables
                 // "temp" when working with temperature.  It confuses everybody.
                 JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
-                double high = temperatureObject.getDouble(OWM_MAX);
-                double low = temperatureObject.getDouble(OWM_MIN);
+                double max = temperatureObject.getDouble(OWM_MAX);
+                double min = temperatureObject.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
-                resultStrs[i] = day + " - " + description + " - " + highAndLow;
+                Previsao previsao = new Previsao(data, (float)min, (float)max, icon);
+                previsoes.add(previsao);
             }
 
             for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Forecast entry: " + s);
             }
-            return resultStrs;
+            return previsoes;
 
         }
     }
