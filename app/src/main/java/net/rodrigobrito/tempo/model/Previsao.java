@@ -48,6 +48,10 @@ public class Previsao {
         this.data = data;
     }
 
+    public String getReadableTemperature(){
+        return getTemperaturaMinima()+"ºC / "+getTemperaturaMaxima()+" ºC";
+    }
+
     @Override
     public String toString() {
         return this.getData()+" - "+this.getTemperaturaMinima()+"/"+this.getTemperaturaMaxima()+" ["+this.getIcone()+"]";

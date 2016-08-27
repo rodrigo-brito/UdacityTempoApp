@@ -35,12 +35,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    private ArrayAdapter<String> mForecastAdapter;
+    //private ArrayAdapter<String> mForecastAdapter;
+    private PrevisaoArrayAdapter previsaoArrayAdapter;
 
     public MainFragment() {
     }
@@ -96,20 +96,21 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        List<String> weekForecast = new ArrayList<String>();
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        ArrayList<Previsao> previsoes = new ArrayList<Previsao>();
+        previsaoArrayAdapter = new PrevisaoArrayAdapter(getActivity(), previsoes);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
+        listView.setAdapter(previsaoArrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Toast.makeText( getActivity(), mForecastAdapter.getItem(position), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), DetailActivity.class).putExtra(Intent.EXTRA_TEXT, mForecastAdapter.getItem(position));
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("icon", previsaoArrayAdapter.getItem(position).getIcone());
+                intent.putExtra("data", previsaoArrayAdapter.getItem(position).getData());
+                intent.putExtra("min", String.valueOf(previsaoArrayAdapter.getItem(position).getTemperaturaMinima()));
+                intent.putExtra("max", String.valueOf(previsaoArrayAdapter.getItem(position).getTemperaturaMaxima()));
                 startActivity(intent);
             }
         });
-
         return rootView;
     }
 
@@ -131,7 +132,7 @@ public class MainFragment extends Fragment {
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(getActivity(), "Couldn't call " + location + ", no receiving apps installed!", Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "Inpossível visualizar " + location + ", visualizador de mapa não disponível!", Toast.LENGTH_SHORT);
         }
     }
 
@@ -142,9 +143,9 @@ public class MainFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Previsao> result) {
             if (result != null) {
-                mForecastAdapter.clear();
+                previsaoArrayAdapter.clear();
                 for(Previsao previsao : result) {
-                    mForecastAdapter.add(previsao.toString());
+                    previsaoArrayAdapter.add(previsao);
                 }
                 // New data is back from the server.  Hooray!
             }

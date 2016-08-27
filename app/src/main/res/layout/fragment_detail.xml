@@ -2,22 +2,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.rodrigobrito.tempo.DetailFragment">
+    tools:context="net.rodrigobrito.tempo.DetailFragment"
+    android:padding="@dimen/activity_horizontal_margin">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/detail_icon"
         android:src="@android:drawable/sym_def_app_icon"
-        android:layout_below="@+id/previsao"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/detail_data"
+        android:textAlignment="viewStart"
+        android:text="Data"
+        android:layout_alignTop="@+id/detail_icon"
+        android:layout_toRightOf="@+id/detail_icon"
+        android:layout_toEndOf="@+id/detail_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Min"
+        android:id="@+id/textView"
+        android:layout_below="@+id/detail_tempMax"
+        android:layout_alignLeft="@+id/detail_icon"
+        android:layout_alignStart="@+id/detail_icon" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Máx"
+        android:id="@+id/textView2"
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/detail_icon"
+        android:layout_alignLeft="@+id/detail_icon"
+        android:layout_alignStart="@+id/detail_icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/previsao"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp" />
+        android:text="10ºC"
+        android:id="@+id/detail_tempMin"
+        android:textAlignment="center"
+        android:layout_below="@+id/textView"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="10ºC"
+        android:id="@+id/detail_tempMax"
+        android:textAlignment="center"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
 </RelativeLayout>
