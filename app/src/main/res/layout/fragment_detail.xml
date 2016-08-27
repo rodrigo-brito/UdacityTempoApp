@@ -22,7 +22,8 @@
         android:text="Data"
         android:layout_alignTop="@+id/detail_icon"
         android:layout_toRightOf="@+id/detail_icon"
-        android:layout_toEndOf="@+id/detail_icon" />
+        android:layout_toEndOf="@+id/detail_icon"
+        android:layout_marginLeft="10dp" />
 
     <TextView
         android:layout_width="wrap_content"
