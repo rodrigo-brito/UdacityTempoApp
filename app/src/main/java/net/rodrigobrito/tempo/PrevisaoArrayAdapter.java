@@ -33,9 +33,16 @@ public class PrevisaoArrayAdapter extends ArrayAdapter<Previsao> {
         TextView data = (TextView) convertView.findViewById(R.id.data_previsao);
         TextView temperatura = (TextView) convertView.findViewById(R.id.temperatura_previsao);
         // Populate the data into the template view using the data object
-        data.setText(previsao.getData());
-        temperatura.setText(previsao.getReadableTemperature());
-        int id_icon = convertView.getResources().getIdentifier( "icon"+previsao.getIcone() , "drawable", this.getContext().getPackageName());
+        int id_icon = R.drawable.warning;
+        String icon_name = previsao.getIcone();
+        if(icon_name != null) {
+            id_icon = convertView.getResources().getIdentifier("icon" + previsao.getIcone(), "drawable", this.getContext().getPackageName());
+            data.setText(previsao.getData());
+            temperatura.setText(previsao.getReadableTemperature());
+        }else{
+            data.setText(previsao.getData());
+            temperatura.setText("Previsão do tempo indisponível");
+        }
         imageView.setImageResource( id_icon );
         return convertView;
     }

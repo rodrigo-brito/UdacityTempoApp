@@ -35,6 +35,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.rodrigobrito.tempo.MainActivity" />
         </activity>
+        <provider
+            android:authorities="net.rodrigobrito.tempo"
+            android:name=".data.WeatherProvider" />
     </application>
 
 </manifest>
