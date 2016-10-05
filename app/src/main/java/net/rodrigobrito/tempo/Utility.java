@@ -26,14 +26,14 @@ public class Utility {
                 .equals(context.getString(R.string.pref_units_metric));
     }
 
-    static String formatTemperature(double temperature, boolean isMetric) {
+    static String formatTemperature(Context ctx, double temperature, boolean isMetric) {
         double temp;
         if ( !isMetric ) {
             temp = 9*temperature/5+32;
         } else {
             temp = temperature;
         }
-        return String.format("%.0f", temp);
+        return ctx.getString(R.string.format_temperature, temp);
     }
 
     static String formatDate(long dateInMilliseconds) {
@@ -71,10 +71,7 @@ public class Utility {
         if (julianDay == currentJulianDay) {
             String today = context.getString(R.string.today);
             int formatId = R.string.format_full_friendly_date;
-            return String.format(context.getString(
-                    formatId,
-                    today,
-                    getFormattedMonthDay(context, dateInMillis)));
+            return context.getString(formatId, today, getFormattedMonthDay(context, dateInMillis));
         } else if ( julianDay < currentJulianDay + 7 ) {
             // If the input date is less than a week in the future, just return the day name.
             return getDayName(context, dateInMillis);
