@@ -1,70 +1,71 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="net.rodrigobrito.tempo.DetailFragment"
-    android:padding="@dimen/activity_horizontal_margin">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/detail_icon"
-        android:src="@android:drawable/sym_def_app_icon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    android:padding="@dimen/activity_horizontal_margin"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/detail_data"
-        android:textAlignment="viewStart"
-        android:text="Data"
-        android:layout_alignTop="@+id/detail_icon"
-        android:layout_toRightOf="@+id/detail_icon"
-        android:layout_toEndOf="@+id/detail_icon"
-        android:layout_marginLeft="10dp" />
+        android:text="Today June, 24"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Min"
-        android:id="@+id/textView"
-        android:layout_below="@+id/detail_tempMax"
-        android:layout_alignLeft="@+id/detail_icon"
-        android:layout_alignStart="@+id/detail_icon" />
+        android:gravity="center_vertical"
+        android:padding="16dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="10º"
+                android:id="@+id/detail_tempMin"
+                android:textAlignment="center" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="10º"
+                android:id="@+id/detail_tempMax"
+                android:textAlignment="center" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical|center_horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_icon"
+                android:src="@android:drawable/sym_def_app_icon"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"/>
+        </LinearLayout>
+    </LinearLayout>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Máx"
-        android:id="@+id/textView2"
-        android:layout_marginTop="22dp"
-        android:layout_below="@+id/detail_icon"
-        android:layout_alignLeft="@+id/detail_icon"
-        android:layout_alignStart="@+id/detail_icon" />
-
+        android:text="Humidade: 84%"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="10ºC"
-        android:id="@+id/detail_tempMin"
-        android:textAlignment="center"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
-
+        android:text="Vento: 6Km/h NW"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="10ºC"
-        android:id="@+id/detail_tempMax"
-        android:textAlignment="center"
-        android:layout_below="@+id/textView2"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_alignStart="@+id/textView2" />
-</RelativeLayout>
+        android:text="Pressão: 1014 hP3"/>
+</LinearLayout>
