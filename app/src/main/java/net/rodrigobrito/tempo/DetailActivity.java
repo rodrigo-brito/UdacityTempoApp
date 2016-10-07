@@ -18,6 +18,10 @@ public class DetailActivity extends AppCompatActivity {
             TextView min = (TextView) findViewById(R.id.detail_tempMin);
             TextView max = (TextView) findViewById(R.id.detail_tempMax);
             ImageView icon = (ImageView) findViewById(R.id.detail_icon);
+            TextView previsao = (TextView) findViewById(R.id.detail_previsao);
+            TextView humidade = (TextView) findViewById(R.id.detail_humidade);
+            TextView vento = (TextView) findViewById(R.id.detail_vento);
+            TextView pressao = (TextView) findViewById(R.id.detail_pressao);
 
             data.setText((String) bundle.get("data"));
             min.setText((String) bundle.get("min"));
